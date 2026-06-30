@@ -2,6 +2,7 @@ package com.englishapp.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,11 +17,18 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                             @NonNull Object handler) throws Exception {
+
+        // 不是所有请求都会对应到Controller方法, 比如静态资源、默认处理器之类，也可能经过拦截器
+        // 如果当前 handler 不是 HandlerMethod，就直接放行
+
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
 
+        // 判断方法上有没有 @LoginRequired
+        // Controller 类上有没有 @LoginRequired
         boolean needLogin = handlerMethod.hasMethodAnnotation(LoginRequired.class)
             || handlerMethod.getBeanType().isAnnotationPresent(LoginRequired.class);
         if (!needLogin) {
@@ -36,6 +44,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         try {
+            // 进行解析JWT,
+            // 这里会去做 JWT 校验，主要包括：
+            // token 签名对不对
+            // token 有没有过期
+            // token 内容能不能正常解析
             Long userId = jwtTokenProvider.parseUserId(authorization.substring(7));
             UserContext.setUserId(userId);
             return true;
@@ -48,7 +61,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                @NonNull Object handler, Exception ex) {
         UserContext.clear();
     }
 }
