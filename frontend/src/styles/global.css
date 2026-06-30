@@ -18,8 +18,10 @@
     margin: 0;
     min-width: 320px;
     background:
-      radial-gradient(circle at top left, rgba(255, 216, 117, 0.45), transparent 30%),
-      linear-gradient(135deg, #f8f4eb 0%, #edf5ff 48%, #f3fff8 100%);
+      radial-gradient(circle at top left, rgba(255, 216, 117, 0.45), transparent 28%),
+      radial-gradient(circle at right center, rgba(150, 204, 255, 0.18), transparent 24%),
+      linear-gradient(135deg, #f7f3eb 0%, #edf4fb 52%, #f6fcf7 100%);
+    color: #172033;
   }
 
   a {
@@ -54,11 +56,11 @@
 
 @layer components {
   .glass-panel {
-    @apply border border-white/70 bg-white/70 shadow-[0_22px_60px_rgba(40,66,96,0.12)] backdrop-blur-[18px];
+    @apply border border-white/70 bg-white/72 shadow-[0_22px_60px_rgba(40,66,96,0.12)] backdrop-blur-[18px];
   }
 
   .content-panel {
-    @apply rounded-[28px] border border-white/70 bg-white/70 p-6 shadow-[0_22px_60px_rgba(40,66,96,0.12)] backdrop-blur-[18px];
+    @apply rounded-[28px] border border-white/70 bg-white/72 p-6 shadow-[0_22px_60px_rgba(40,66,96,0.12)] backdrop-blur-[18px];
   }
 
   .pill-tag {
